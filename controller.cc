@@ -115,15 +115,15 @@ gettimeofday(&timeCurrent, NULL);
 //gettimeofday(&timeCurrent, NULL);
 //printf("time rttMin = %ld\n", timeCurrent.tv_sec - oldTime_rttMin);
   // Calculando rttMIN em um intervalo de tempo TIME_RTT_MIN em segundos
-  if ((timeCurrent.tv_sec - oldTime_rttMin) < TIME_RTT_MIN){
-    if (rttCurrent < rttMin){
-      rttMin = rttCurrent;
-    }
-  } else {
-    oldTime_rttMin = timeCurrent.tv_sec;
-    rttMin = rttCurrent;
-  }
-
+  // if ((timeCurrent.tv_sec - oldTime_rttMin) < TIME_RTT_MIN){
+  //   if (rttCurrent < rttMin){
+  //     rttMin = rttCurrent;
+  //   }
+  // } else {
+  //   oldTime_rttMin = timeCurrent.tv_sec;
+  //   rttMin = rttCurrent;
+  // }
+  rttMin = 42;
 //-------------------------------------------------------------------------
 
   dq = rttStanding - rttMin;
@@ -152,6 +152,7 @@ gettimeofday(&timeCurrent, NULL);
     }
   if (DELTA > 0.5) DELTA = 0.5;
   if (DELTA < 0.1) DELTA = 0.1;
+  if (rttCurrent > 80) DELTA = 0.5;
 
 
   if (rttCurrent < 45){
@@ -214,7 +215,7 @@ gettimeofday(&timeCurrent, NULL);
   if (lambda <= lambda1){
     cwnd = cwnd + v / (DELTA * cwnd);
   }else {
-    cwnd = (cwnd - v / (DELTA * cwnd)) - 0.2 ;
+    cwnd = (cwnd - v / (DELTA * cwnd)) ;
   }
   //}
 
