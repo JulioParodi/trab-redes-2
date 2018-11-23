@@ -95,9 +95,10 @@ void Controller::ack_received( const uint64_t sequence_number_acked,
 //
 // calcular rttStanding (em um tempo t) e rttMin (em um tempo TIME_RTT_MIN)
 gettimeofday(&timeCurrent, NULL);
-// printf("------------------  %s %ld ---------------------\n","Time ", timeCurrent.tv_sec - timeExec );
+ printf("------------------  %s %ld ---------------------\n","Time ", timeCurrent.tv_sec - timeExec );
 // printf("srtt = %d, t = %ld\n",srtt, t );
 // printf("rttStanding %d, rttMin %d , rttCurrent %d\n",rttStanding ,rttMin, rttCurrent);
+printf("rttCurrent %d\n", rttCurrent);
 // printf("time rttStanding = %ld\n", (timeCurrent.tv_usec/1000 - oldTime_rttStanding/1000));
   // Calculando rttStanding em um intervalo de tempo T em milissegundos
   if ((timeCurrent.tv_usec/1000 - oldTime_rttStanding/1000) < t){
@@ -143,10 +144,10 @@ gettimeofday(&timeCurrent, NULL);
     DELTA = 0.5;
   }else {
     if (dq < 0.9 * (rttMax - rttMin)){
-      DELTA += 0.0005;
+      DELTA += 0.0009;
     }
       else {
-        DELTA *= 0.98;
+        DELTA *= 0.99;
 
       }
     }
@@ -158,15 +159,26 @@ gettimeofday(&timeCurrent, NULL);
   if (rttCurrent < 45){
          cwnd += 0.2;
        }else {
-         if (rttCurrent < 50){
+         if (rttCurrent < 55){
            cwnd += 0.1;
          }else {
-           if (rttCurrent < 55){
+           if (rttCurrent < 65){
              cwnd += 0.05;
            }
          }
        }
 
+       if (rttCurrent > 246){
+              cwnd *= 0.8;
+            }else {
+              if (rttCurrent > 128){
+                cwnd *= 0.9;
+              }else {
+                // if (rttCurrent > 80){
+                //   cwnd *= 0.9;
+                // }
+              }
+            }
 
   // if (rttCurrent < 30){
   //   //DELTA = 0.1;
@@ -203,7 +215,7 @@ gettimeofday(&timeCurrent, NULL);
   printf("%lf\n",DELTA );
   //
 
-  printf("%d\n", rttMin );
+  // printf("%d\n", rttMin );
 //------------------------------------------------------------------------------------------------------
 
   lambda1 = 1 / ( DELTA * dq );
@@ -223,7 +235,7 @@ gettimeofday(&timeCurrent, NULL);
 
 // calcular v (paramentro de velocidade)
   directionOld = direction;
-  //printf("oldCwnd = %d, cwnd = %0.f\n", oldCwnd, cwnd );
+  printf("cwnd = %0.f\n", cwnd );
   if (oldCwnd <  cwnd){
     direction = true;
   } else {
@@ -261,7 +273,7 @@ gettimeofday(&timeCurrent, NULL);
    before sending one more datagram */
 unsigned int Controller::timeout_ms()
 {
-  return 80; /* timeout of one second */
+  return 90; /* timeout of one second */
 }
 
 void Controller::initController()
