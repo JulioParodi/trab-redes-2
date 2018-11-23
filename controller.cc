@@ -144,10 +144,10 @@ printf("rttCurrent %d\n", rttCurrent);
     DELTA = 0.5;
   }else {
     if (dq < 0.9 * (rttMax - rttMin)){
-      DELTA += 0.0009;
+      DELTA += 0.0008;
     }
       else {
-        DELTA *= 0.99;
+        DELTA *= 0.98;
 
       }
     }
@@ -156,29 +156,6 @@ printf("rttCurrent %d\n", rttCurrent);
   if (rttCurrent > 80) DELTA = 0.5;
 
 
-  if (rttCurrent < 45){
-         cwnd += 0.2;
-       }else {
-         if (rttCurrent < 55){
-           cwnd += 0.1;
-         }else {
-           if (rttCurrent < 65){
-             cwnd += 0.05;
-           }
-         }
-       }
-
-       if (rttCurrent > 246){
-              cwnd *= 0.8;
-            }else {
-              if (rttCurrent > 128){
-                cwnd *= 0.9;
-              }else {
-                // if (rttCurrent > 80){
-                //   cwnd *= 0.9;
-                // }
-              }
-            }
 
   // if (rttCurrent < 30){
   //   //DELTA = 0.1;
@@ -230,6 +207,31 @@ printf("rttCurrent %d\n", rttCurrent);
     cwnd = (cwnd - v / (DELTA * cwnd)) ;
   }
   //}
+  if (rttCurrent < 45){
+         cwnd += 0.2;
+       }else {
+         if (rttCurrent < 55){
+           cwnd += 0.15;
+         }else {
+           if (rttCurrent < 65){
+             cwnd += 0.1;
+           }
+         }
+       }
+
+
+       if (rttCurrent > 250){
+              cwnd *= 0.7;
+            }else {
+              if (rttCurrent > 150){
+                cwnd *= 0.8;
+              }else {
+                // if (rttCurrent > 80){
+                //   cwnd *= 0.9;
+                // }
+              }
+            }
+
 
   if (cwnd < 1) cwnd = 1; // Por segurança
 
@@ -246,7 +248,7 @@ printf("rttCurrent %d\n", rttCurrent);
     if (cont % 3 == 0){ // melhor caso (&& cont < 10)
        v = v * 2;
      }
-     if (cont > 8) v = 1; //10 - 24 pow; 13 - 26 pow
+     if (cont > 7) v = 1; //10 - 24 pow; 13 - 26 pow
      cont++;
      // if (cont > contMax) contMax = cont;
   } else {
@@ -273,7 +275,7 @@ printf("rttCurrent %d\n", rttCurrent);
    before sending one more datagram */
 unsigned int Controller::timeout_ms()
 {
-  return 90; /* timeout of one second */
+  return 80; /* timeout of one second */
 }
 
 void Controller::initController()
